@@ -1,3 +1,4 @@
+.gitignore
 .metadata/
 03_BASIC_printf-over-UART/
 lab01_uart/

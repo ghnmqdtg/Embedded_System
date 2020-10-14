@@ -74,6 +74,8 @@ UART_HandleTypeDef huart1;
 SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN PV */
+
+// ref: http://www.makdev.net/2018/06/printf-uart.html
 /** @brief using printf() as HAL_UART_Transmit() */
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -89,6 +91,7 @@ PUTCHAR_PROTOTYPE{
 //HAL_UART_Transmit(UART_HandleTypeDef* huart, uint8_t pData, uint16_t Size, uint32_t Timeout);
   return ch;
 }
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -118,7 +121,7 @@ int btn_debounce(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-// use external interrupt, check stm32f7xx_it.c - EXTI15_10_IRQHandler
+// use external interrupt, check stm32f7xx_it.c - EXTI15_10_IRQHandler() function
 int mode = 0;
 int delay_time = 0;
 int added = 0;
@@ -178,17 +181,19 @@ int main(void)
     BSP_LCD_SetFont(&Font24);
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
     BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
-  /* USER CODE END 2 */
+    /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
 
+    // Initializes the program
     printf("START RUNNING\n");
     while (1)
     {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    // "added" changes while external interruption happened
     if(added == 1) {
     	switch(mode) {
         	case 1:
