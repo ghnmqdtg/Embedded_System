@@ -197,7 +197,7 @@ int main(void)
     if(added == 1) {
     	switch(mode) {
         	case 1:
-        		delay_time = 200;
+        	delay_time = 200;
     			printf("MODE 1, LED FLASH = 5Hz\n");
     			BSP_LCD_DisplayStringAtLine(1, (uint8_t *)"MODE 1, LED FLASH = 5Hz");
     			break;

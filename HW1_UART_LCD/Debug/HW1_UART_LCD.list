@@ -471,19 +471,19 @@ int main(void)
     BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
  80005ae:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
  80005b2:	f009 fc9d 	bl	8009ef0 <BSP_LCD_SetBackColor>
-  /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
 
+    // Initializes the program
     printf("START RUNNING\n");
  80005b6:	482e      	ldr	r0, [pc, #184]	; (8000670 <main+0x144>)
  80005b8:	f00a fab2 	bl	800ab20 <puts>
-    while (1)
     {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    // "added" changes while external interruption happened
     if(added == 1) {
  80005bc:	4b2d      	ldr	r3, [pc, #180]	; (8000674 <main+0x148>)
  80005be:	681b      	ldr	r3, [r3, #0]
@@ -499,7 +499,7 @@ int main(void)
  80005d0:	2b01      	cmp	r3, #1
  80005d2:	d121      	bne.n	8000618 <main+0xec>
         	case 1:
-        		delay_time = 200;
+        	delay_time = 200;
  80005d4:	4b29      	ldr	r3, [pc, #164]	; (800067c <main+0x150>)
  80005d6:	22c8      	movs	r2, #200	; 0xc8
  80005d8:	601a      	str	r2, [r3, #0]
