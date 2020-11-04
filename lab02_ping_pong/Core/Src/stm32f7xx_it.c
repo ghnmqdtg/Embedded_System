@@ -213,7 +213,7 @@ void EXTI15_10_IRQHandler(void)
   mode = mode + 1;
   
   if (mode > 2) {
-    mode = 0;
+    mode = 1;
   }
   
   /* USER CODE END EXTI15_10_IRQn 1 */

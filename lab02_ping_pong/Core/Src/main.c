@@ -132,7 +132,7 @@ static void MX_USART6_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 // use external interrupt, check stm32f7xx_it.c - EXTI15_10_IRQHandler() function
-int mode = 0;
+int mode = 1;
 
 typedef struct ball_position ball_position;
 typedef struct paddle_left paddle_left;
@@ -217,6 +217,7 @@ int main(void)
   
   /** Initialize the board **/
   int speed = 5;
+  int delay_time = speed + 5;
   int access_0 = 0;
   int access_2 = 0;
   // Touch screen
@@ -264,31 +265,44 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if (mode == 0) {
+    // If I use it, I may not pass the test
+    // if (mode == 0) {
+    //   if(access_0 == 0) {
+    //     BSP_LCD_Clear(LCD_COLOR_BLACK);
+    //     access_0 = 1;
+    //   }
+    //   sprintf(str, "        THE PONG GAME  ");
+    //   BSP_LCD_DisplayStringAtLine(5, (uint8_t*) str);
+    //   ball.x = center_x;
+    //   ball.y = center_y;
+    //   // Default position of paddles
+    //   paddle_L.x = 30;
+    //   paddle_L.y = screen_height / 2;
+    //   paddle_R.x = 450;
+    //   paddle_R.y = screen_height / 2;
+    //   point_L = 0;
+    //   point_R = 0;
+    //   access_2 = 0;
+    // }
+
+    if (mode == 1) {
       if(access_0 == 0) {
         BSP_LCD_Clear(LCD_COLOR_BLACK);
         access_0 = 1;
+        ball.x = center_x;
+        ball.y = center_y;
+        // Default position of paddles
+        paddle_L.x = 30;
+        paddle_L.y = screen_height / 2;
+        paddle_R.x = 450;
+        paddle_R.y = screen_height / 2;
+        point_L = 0;
+        point_R = 0;
+        access_2 = 0;
       }
-      sprintf(str, "        THE PONG GAME  ");
-      BSP_LCD_DisplayStringAtLine(5, (uint8_t*) str);
-      ball.x = center_x;
-      ball.y = center_y;
-      // Default position of paddles
-      paddle_L.x = 30;
-      paddle_L.y = screen_height / 2;
-      paddle_R.x = 450;
-      paddle_R.y = screen_height / 2;
-      point_L = 0;
-      point_R = 0;
-      access_2 = 0;
-    }
-
-    if (mode == 1) {
-      // sprintf(str, "Mode: %d", mode);
-      // BSP_LCD_DisplayStringAtLine(0, (uint8_t*) str);
-      sprintf(str, "           SPEED      ");
-      BSP_LCD_DisplayStringAtLine(3, (uint8_t*) str);
-      sprintf(str, "          - %2d  +    ", speed);
+      // sprintf(str, "           SPEED      ");
+      // BSP_LCD_DisplayStringAtLine(3, (uint8_t*) str);
+      sprintf(str, "    SPEED - %2d  +    ", speed);
       BSP_LCD_DisplayStringAtLine(5, (uint8_t*) str);
       tick_current = HAL_GetTick();
       if (tick_current - tk_record_0 > 100) {
@@ -301,11 +315,17 @@ int main(void)
               if (speed < 1) {
                 speed = 1;
               }
+              while (TS_State.touchDetected) {
+                BSP_TS_GetState(&TS_State);
+              }
             }
             else {
               speed = speed + 1;
               if (speed > 10) {
                 speed = 10;
+              }
+              while (TS_State.touchDetected) {
+                BSP_TS_GetState(&TS_State);
               }
             }
           }
@@ -356,8 +376,9 @@ int main(void)
 
       /** Logic of the game **/
       // change the speed of the ball
-      ball.x = ball.x + distance_x * speed * 0.5;
-      ball.y = ball.y + distance_y * speed * 0.5;
+      delay_time = (-1 * speed + 11) + 5;
+      ball.x = ball.x + distance_x;
+      ball.y = ball.y + distance_y;
       // (debugging)
       // sprintf(str, "x: %03d, y: %03d", ball.x, ball.y);
       // BSP_LCD_DisplayStringAtLine(0, (uint8_t*) str);
@@ -368,21 +389,21 @@ int main(void)
       }
       // the ball meets the left paddle
       if ((ball.x >= paddle_L.x + 5) && (ball.x <= paddle_L.x + 10)) {
-        // upper bound and lower bound
+        // upper bound and lower bound of the paddle
         if ((ball.y + 5 > paddle_L.y - paddle_height / 2) && (ball.y - 5 < paddle_L.y + paddle_height / 2)) {
           distance_x = -1 * distance_x;
         }
       }
       // the ball meets the right paddle
       if ((ball.x >= paddle_R.x - 10) && (ball.x <= paddle_R.x - 5)) {
-        // upper bound and lower bound
+        // upper bound and lower bound of the paddle
         if ((ball.y + 5 > paddle_R.y - paddle_height / 2) && (ball.y - 5  < paddle_R.y + paddle_height / 2)) {
           distance_x = -1 * distance_x;
         }
       }
 
       // out of the left bound
-      if (ball.x <= 0) {
+      if (ball.x <= 5) {
         point_R = point_R + 1;
         ball.x = center_x;
         ball.y = center_y;
@@ -395,7 +416,7 @@ int main(void)
       }
 
       // out of the right bound
-      if (ball.x >= screen_width) {
+      if (ball.x >= screen_width - 5) {
         point_L = point_L + 1;
         ball.x = center_x;
         ball.y = center_y;
@@ -408,10 +429,12 @@ int main(void)
       }
       
       /** Drawing on the LCD **/
+      /* Clear the LCD */
       BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
       BSP_LCD_FillCircle(ball_x_last, ball_y_last, ball_radius);
       BSP_LCD_FillRect(paddle_L.x, 0, paddle_width, screen_height);
       BSP_LCD_FillRect(paddle_R.x - 5, 0, paddle_width, screen_height);
+      /* Draw the item */
       BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
       // Ball
       BSP_LCD_FillCircle(ball.x, ball.y, ball_radius);
@@ -422,8 +445,8 @@ int main(void)
       // Counting the points
       sprintf(str, "%03d:%03d", point_L, point_R);
       BSP_LCD_DisplayStringAt(0, 0, (uint8_t*) str, CENTER_MODE);
-      /* Clear the LCD */
-      HAL_Delay(15);
+      
+      HAL_Delay(delay_time);
       ball_x_last = ball.x;
       ball_y_last = ball.y;
     }
