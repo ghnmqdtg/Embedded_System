@@ -310,19 +310,23 @@ int main(void)
         BSP_TS_GetState(&TS_State);
         if (TS_State.touchDetected) {
           if (TS_State.touchX[0] != 0) {
-            if (TS_State.touchX[0] <= (screen_width / 2)) {
-              speed = speed - 1;
-              if (speed < 1) {
-                speed = 1;
+            if (TS_State.touchX[0] <= (screen_width / 2 - 40) && TS_State.touchX[0] >= (screen_width / 2 - 60)) {
+              if (TS_State.touchY[0] <= (screen_height / 2 + 30) && TS_State.touchY[0] >= (screen_height / 2 - 30)) {
+                speed = speed - 1;
+                if (speed < 1) {
+                  speed = 1;
+                }
               }
               while (TS_State.touchDetected) {
                 BSP_TS_GetState(&TS_State);
               }
             }
-            else {
-              speed = speed + 1;
-              if (speed > 10) {
-                speed = 10;
+            else if (TS_State.touchX[0] >= (screen_width / 2 + 40) && TS_State.touchX[0] <= (screen_width / 2 + 60)) {
+              if (TS_State.touchY[0] <= (screen_height / 2 + 30) && TS_State.touchY[0] >= (screen_height / 2 - 30)) {
+                speed = speed + 1;
+                if (speed > 10) {
+                  speed = 10;
+                }
               }
               while (TS_State.touchDetected) {
                 BSP_TS_GetState(&TS_State);
