@@ -436,17 +436,17 @@
               "Blue": 0
             },
             "Alpha": 255,
-            "AutoSize": true,
+            "AutoSize": false,
             "LineSpacing": 0,
             "Wildcard1": {
-              "TextId": "SingleUseId14",
+              "TextId": "SingleUseId21",
               "UseBuffer": true,
-              "BufferSize": 10
+              "BufferSize": 16
             },
             "Name": "text_num",
-            "X": 341,
+            "X": 125,
             "Y": 17,
-            "Width": 13,
+            "Width": 230,
             "Height": 25,
             "Visible": true,
             "LockPosition": false,
@@ -619,6 +619,18 @@
             "Trigger": {
               "Type": "TriggerClicked",
               "TriggerComponent": "btn_enter"
+            },
+            "Action": {
+              "Type": "ActionCustom",
+              "FunctionName": "btn_enter_clicked"
+            }
+          },
+          {
+            "InteractionName": "Interaction_change_screen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "Type": "TriggerInteractionCompleted",
+              "InteractionToTriggerOn": "Interaction_btn_enter_clicked"
             },
             "Action": {
               "Type": "ActionGotoScreen",
@@ -2889,10 +2901,6 @@
         "IsResource": false
       },
       {
-        "TextEntryId": "SingleUseId14",
-        "IsResource": false
-      },
-      {
         "TextEntryId": "SingleUseId18",
         "IsResource": false
       },
@@ -2902,6 +2910,10 @@
       },
       {
         "TextEntryId": "SingleUseId20",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId21",
         "IsResource": false
       }
     ],

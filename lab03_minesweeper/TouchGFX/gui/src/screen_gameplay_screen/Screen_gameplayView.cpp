@@ -8,6 +8,8 @@ Screen_gameplayView::Screen_gameplayView()
 void Screen_gameplayView::setupScreen()
 {
     Screen_gameplayViewBase::setupScreen();
+    Unicode::snprintf(text_mime_numBuffer, TEXT_MIME_NUM_SIZE, "%d", bomb_num);
+    text_mime_num.invalidate();
 }
 
 void Screen_gameplayView::tearDownScreen()

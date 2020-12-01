@@ -119,12 +119,11 @@ Screen_defaultViewBase::Screen_defaultViewBase() :
     background_text_num.setBorderColor(touchgfx::Color::getColorFrom24BitRGB(163, 163, 163));
     background_text_num.setBorderSize(1);
 
-    text_num.setXY(341, 17);
+    text_num.setPosition(125, 17, 230, 25);
     text_num.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     text_num.setLinespacing(0);
-    Unicode::snprintf(text_numBuffer, TEXT_NUM_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID14).getText());
+    Unicode::snprintf(text_numBuffer, TEXT_NUM_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID21).getText());
     text_num.setWildcard(text_numBuffer);
-    text_num.resizeToCurrentText();
     text_num.setTypedText(touchgfx::TypedText(T_SINGLEUSEID12));
 
     text_title.setXY(206, 241);
@@ -228,7 +227,12 @@ void Screen_defaultViewBase::buttonCallbackHandler(const touchgfx::AbstractButto
     else if (&src == &btn_enter)
     {
         //Interaction_btn_enter_clicked
-        //When btn_enter clicked change screen to Screen_gameplay
+        //When btn_enter clicked call virtual function
+        //Call btn_enter_clicked
+        btn_enter_clicked();
+
+        //Interaction_change_screen
+        //When Interaction_btn_enter_clicked completed change screen to Screen_gameplay
         //Go to Screen_gameplay with screen transition towards East
         application().gotoScreen_gameplayScreenSlideTransitionEast();
     }

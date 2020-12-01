@@ -79,6 +79,11 @@ public:
         // Override and implement this function in Screen_default
     }
 
+    virtual void btn_enter_clicked()
+    {
+        // Override and implement this function in Screen_default
+    }
+
 protected:
     FrontendApplication& application() {
         return *static_cast<FrontendApplication*>(touchgfx::Application::getInstance());
@@ -109,7 +114,7 @@ protected:
     /*
      * Wildcard Buffers
      */
-    static const uint16_t TEXT_NUM_SIZE = 10;
+    static const uint16_t TEXT_NUM_SIZE = 16;
     touchgfx::Unicode::UnicodeChar text_numBuffer[TEXT_NUM_SIZE];
 
 private:

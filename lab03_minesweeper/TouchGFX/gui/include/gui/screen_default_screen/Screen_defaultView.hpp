@@ -11,6 +11,7 @@ public:
     virtual ~Screen_defaultView() {}
     virtual void setupScreen();
     virtual void tearDownScreen();
+protected:
     virtual void btn_0_clicked();
     virtual void btn_1_clicked();
     virtual void btn_2_clicked();
@@ -23,7 +24,7 @@ public:
     virtual void btn_9_clicked();
     virtual void btn_cancel_clicked();
     virtual void btn_enter_clicked();
-protected:
+    virtual void string_handler(char *str,  char c);
 };
 
 #endif // SCREEN_DEFAULTVIEW_HPP
