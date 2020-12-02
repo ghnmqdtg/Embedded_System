@@ -1,9 +1,10 @@
 #include <gui/screen_gameplay_screen/Screen_gameplayView.hpp>
 // To get BITMAP__ID
 #include "BitmapDatabase.hpp"
-// #include <stdlib.h>
+#include <stdlib.h>
 // Handling random value
-#include <time.h>
+// #include <time.h>
+#include <stm32f7xx_hal.h>
 
 #define MATRIX_ROW 8
 #define MATRIX_COL 15
@@ -50,14 +51,14 @@ void Screen_gameplayView::setupScreen()
 
     // Set bombs in matrix
     // Random seed
-    srand(time(NULL));
+    srand(HAL_GetTick());
     // Buffer for bombs
     int bomb_to_be_set = bomb_num;
     
     while (bomb_to_be_set >= 1) {
         // rand() % (max - min + 1) + min
-        int row = rand() % (15 - 1 + 1) + 1;
-        int col = rand() % ( 8 - 1 + 1) + 1;
+        int row = rand() % (30 - 1 + 1) + 1;
+        int col = rand() % (20 - 1 + 1) + 1;
         if (matrix[row][col] == gird_properties::EMPTY) {
             matrix[row][col] = gird_properties::BOMB;
             bomb_to_be_set = bomb_to_be_set - 1;
@@ -151,9 +152,14 @@ void Screen_gameplayView::button_clicked(Button &btn, ClickEvent &event) {
         touchgfx_printf("button[%d][%d] is pressed\n", y, x);
     #endif
 
+    // Check wining or not
+    winning_condition = MATRIX_ROW * MATRIX_COL - bomb_num_buffer;
+
     // Clicking logic
     // If the pressed button is a BOMB, you lose the game
     if(matrix[y][x] == gird_properties::BOMB) {
+        Unicode::snprintf(text_infoBuffer, TEXT_INFO_SIZE, "LOSER");
+        text_info.invalidate();
         // Stop the timer
         timer_running = 0;
         // Show all BOMBS 
@@ -169,14 +175,8 @@ void Screen_gameplayView::button_clicked(Button &btn, ClickEvent &event) {
     else {
         blank_recursing(y, x);
     }
-
     matrix_content(y, x);
-    
-    
-    
-    // Check wining or not
-    winning_condition = MATRIX_ROW * MATRIX_COL - bomb_num_buffer;
-    
+
     displayed_count = 0;
     for (int row = 1; row <= MATRIX_ROW; row++) {
             for (int col = 1; col <= MATRIX_COL; col++) {
@@ -186,13 +186,17 @@ void Screen_gameplayView::button_clicked(Button &btn, ClickEvent &event) {
             }
     }
 
+    if (winning_condition == displayed_count) {
+        timer_running = 0;
+        Unicode::snprintf(text_infoBuffer, TEXT_INFO_SIZE, "WINNER");
+        text_info.invalidate();
+    }
+
     #ifdef SIMULATOR
     touchgfx_printf("displayed_count: %d\n", displayed_count);
     #endif
 
-    if (winning_condition == displayed_count) {
-        timer_running = 0;
-    }
+    
 }
 
 touchgfx::ClickListener<touchgfx::Button>& Screen_gameplayView::btn_table(int row, int col) {

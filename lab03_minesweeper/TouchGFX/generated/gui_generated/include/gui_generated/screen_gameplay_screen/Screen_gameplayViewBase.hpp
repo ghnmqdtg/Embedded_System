@@ -158,12 +158,15 @@ protected:
     touchgfx::TextAreaWithOneWildcard text_mime_num;
     touchgfx::DigitalClock digitalClock;
     touchgfx::Button button_leave;
+    touchgfx::TextAreaWithOneWildcard text_info;
 
     /*
      * Wildcard Buffers
      */
     static const uint16_t TEXT_MIME_NUM_SIZE = 10;
     touchgfx::Unicode::UnicodeChar text_mime_numBuffer[TEXT_MIME_NUM_SIZE];
+    static const uint16_t TEXT_INFO_SIZE = 10;
+    touchgfx::Unicode::UnicodeChar text_infoBuffer[TEXT_INFO_SIZE];
 
 private:
 

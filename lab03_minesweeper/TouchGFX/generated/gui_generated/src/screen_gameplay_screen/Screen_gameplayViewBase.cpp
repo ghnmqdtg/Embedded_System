@@ -526,6 +526,13 @@ Screen_gameplayViewBase::Screen_gameplayViewBase() :
     button_leave.setBitmaps(touchgfx::Bitmap(BITMAP_BTN_11_ID), touchgfx::Bitmap(BITMAP_BTN_BLANK_ID));
     button_leave.setAction(buttonCallback);
 
+    text_info.setPosition(194, 17, 92, 25);
+    text_info.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    text_info.setLinespacing(0);
+    text_infoBuffer[0] = 0;
+    text_info.setWildcard(text_infoBuffer);
+    text_info.setTypedText(touchgfx::TypedText(T_SINGLEUSEID22));
+
     add(__background);
     add(background_gameplay);
     add(container1);
@@ -534,6 +541,7 @@ Screen_gameplayViewBase::Screen_gameplayViewBase() :
     add(text_mime_num);
     add(digitalClock);
     add(button_leave);
+    add(text_info);
 }
 
 void Screen_gameplayViewBase::setupScreen()
