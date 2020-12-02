@@ -26,7 +26,17 @@ public:
     virtual void deactivate();
 
     virtual ~Screen_gameplayPresenter() {};
+    
+    void save_bomb_num(int16_t bombnum)
+    {
+        model->save_bomb_num(bombnum);
+    }
 
+    int16_t get_bomb_num()
+    {
+        return model->get_bomb_num();
+    }
+    
 private:
     Screen_gameplayPresenter();
 

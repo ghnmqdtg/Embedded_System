@@ -44,6 +44,17 @@ void FrontendApplicationBase::gotoScreen_defaultScreenNoTransitionImpl()
     touchgfx::makeTransition<Screen_defaultView, Screen_defaultPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
+void FrontendApplicationBase::gotoScreen_defaultScreenSlideTransitionWest()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoScreen_defaultScreenSlideTransitionWestImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoScreen_defaultScreenSlideTransitionWestImpl()
+{
+    touchgfx::makeTransition<Screen_defaultView, Screen_defaultPresenter, touchgfx::SlideTransition<WEST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
 // Screen_gameplay
 
 void FrontendApplicationBase::gotoScreen_gameplayScreenSlideTransitionEast()

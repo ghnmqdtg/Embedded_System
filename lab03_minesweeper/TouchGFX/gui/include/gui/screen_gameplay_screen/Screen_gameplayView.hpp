@@ -13,6 +13,11 @@ public:
     virtual void tearDownScreen();
     virtual void handleTickEvent();
 
+    // Use 'clicklistener' that TouchGFX provides
+    // REF: https://support.touchgfx.com/docs/development/ui-development/touchgfx-engine-features/mixins#clicklistener
+    // Declaring callback handler for button
+    void Button_Click_Handler(const Button& btn, const ClickEvent& event);
+
 protected:
     // Variables for the timer
     // REF: https://support.touchgfx.com/docs/development/ui-development/ui-components/miscellaneous/digital-clock
@@ -20,6 +25,10 @@ protected:
     int timer_hours;
     int timer_minutes;
     int timer_seconds;
+
+    void grid_clicked(Button &btn, ClickEvent &event);
+    // Declaring callback type of button and clickEvent
+    Callback<Screen_gameplayView, const Button&, const ClickEvent&> Button_Callback;
 };
 
 #endif // SCREEN_GAMEPLAYVIEW_HPP

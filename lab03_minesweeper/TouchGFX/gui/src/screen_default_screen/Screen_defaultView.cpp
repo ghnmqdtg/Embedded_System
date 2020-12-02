@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include <math.h>
 
-size_t bomb_num = 0;
-size_t val = 0;
+int bomb_num = 0;
+int val = 0;
 // String buffer
 char bomb_str[16];
 
 // Convert string into int
-size_t str_to_int(char *str, int val);
+int str_to_int(char *str, int val);
 
 Screen_defaultView::Screen_defaultView() {
 
@@ -23,7 +23,8 @@ void Screen_defaultView::tearDownScreen() {
     Screen_defaultViewBase::tearDownScreen();
 }
 
-size_t str_to_int(char *str, int val) {
+// I can't use atoi because of unknown problem
+int str_to_int(char *str, int val) {
     int len = strlen(str);
     if (len != 0) {
         for (int i = 0; i < len; i++) {
@@ -144,4 +145,5 @@ void Screen_defaultView::btn_enter_clicked() {
     else if (bomb_num < 5) {
         bomb_num = 5;
     }
+    presenter->save_bomb_num(bomb_num);
 }

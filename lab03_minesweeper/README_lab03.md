@@ -16,6 +16,7 @@
     * `Screen_defaultView.hpp`
 2. `screen_gameplay`
     * `Screen_gameplayView.cpp`
+        1. 初始化：設定初始值、隨機放炸彈、炸彈旁邊的數字
 
     * `Screen_gameplayView.hpp`
 

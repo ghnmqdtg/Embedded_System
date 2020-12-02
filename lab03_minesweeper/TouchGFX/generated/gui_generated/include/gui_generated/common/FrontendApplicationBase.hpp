@@ -18,6 +18,8 @@ public:
     // Screen_default
     void gotoScreen_defaultScreenNoTransition();
 
+    void gotoScreen_defaultScreenSlideTransitionWest();
+
     // Screen_gameplay
     void gotoScreen_gameplayScreenSlideTransitionEast();
 
@@ -28,6 +30,8 @@ protected:
 
     // Screen_default
     void gotoScreen_defaultScreenNoTransitionImpl();
+
+    void gotoScreen_defaultScreenSlideTransitionWestImpl();
 
     // Screen_gameplay
     void gotoScreen_gameplayScreenSlideTransitionEastImpl();

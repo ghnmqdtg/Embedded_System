@@ -27,6 +27,16 @@ public:
 
     virtual ~Screen_defaultPresenter() {};
 
+    void save_bomb_num(int bombnum)
+    {
+        model->save_bomb_num(bombnum);
+    }
+
+    int get_bomb_num()
+    {
+        return model->get_bomb_num();
+    }
+
 private:
     Screen_defaultPresenter();
 

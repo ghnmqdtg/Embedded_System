@@ -15,12 +15,12 @@ public:
 
     void tick();
 
-    void save_bomb_num(int16_t bombnum)
+    void save_bomb_num(int bombnum)
     {
         bomb_num = bombnum;
     }
 
-    int16_t get_bomb_num()
+    int get_bomb_num()
     {
         return bomb_num;
     }
@@ -28,7 +28,7 @@ public:
 
 protected:
     ModelListener* modelListener;
-    int16_t bomb_num;
+    int bomb_num;
 };
 
 #endif // MODEL_HPP
