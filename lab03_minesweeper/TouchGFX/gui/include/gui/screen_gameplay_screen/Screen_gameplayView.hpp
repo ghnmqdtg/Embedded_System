@@ -13,6 +13,32 @@ public:
     virtual void tearDownScreen();
     virtual void handleTickEvent();
 
+    // Use enum class to replace enum
+    // REF: https://kheresy.wordpress.com/2019/03/27/using-enum-class/
+    enum class gird_properties {
+      COUNT1 = '1',
+      COUNT2 = '2',
+      COUNT3 = '3',
+      COUNT4 = '4',
+      COUNT5 = '5',
+      COUNT6 = '6',
+      COUNT7 = '7',
+      COUNT8 = '8',
+      EMPTY,
+      BOMB
+    };
+
+    // enum class bomb_around : char {
+    //     COUNT1 = '1',
+    //     COUNT2 = '2',
+    //     COUNT3 = '3',
+    //     COUNT4 = '4',
+    //     COUNT5 = '5',
+    //     COUNT6 = '6',
+    //     COUNT7 = '7',
+    //     COUNT8 = '8',
+    // };
+
     // Use 'clicklistener' that TouchGFX provides
     // REF: https://support.touchgfx.com/docs/development/ui-development/touchgfx-engine-features/mixins#clicklistener
     // Declaring callback handler for button
@@ -27,6 +53,8 @@ protected:
     int timer_seconds;
 
     void grid_clicked(Button &btn, ClickEvent &event);
+    // Get button widget by parsing button table
+    touchgfx::ClickListener<touchgfx::Button> &btn_table(int row, int col);
     // Declaring callback type of button and clickEvent
     Callback<Screen_gameplayView, const Button&, const ClickEvent&> Button_Callback;
 };
