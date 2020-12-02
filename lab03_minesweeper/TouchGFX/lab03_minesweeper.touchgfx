@@ -2717,7 +2717,7 @@
             "Width": 375,
             "Height": 200,
             "Visible": true,
-            "LockPosition": false,
+            "LockPosition": true,
             "Draggable": false,
             "Clickable": false,
             "Fadeable": false,

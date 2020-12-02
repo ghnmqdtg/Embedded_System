@@ -16,28 +16,17 @@ public:
     // Use enum class to replace enum
     // REF: https://kheresy.wordpress.com/2019/03/27/using-enum-class/
     enum class gird_properties {
-      COUNT1 = '1',
-      COUNT2 = '2',
-      COUNT3 = '3',
-      COUNT4 = '4',
-      COUNT5 = '5',
-      COUNT6 = '6',
-      COUNT7 = '7',
-      COUNT8 = '8',
+      COUNT1,
+      COUNT2,
+      COUNT3,
+      COUNT4,
+      COUNT5,
+      COUNT6,
+      COUNT7,
+      COUNT8,
       EMPTY,
-      BOMB
+      BOMB,
     };
-
-    // enum class bomb_around : char {
-    //     COUNT1 = '1',
-    //     COUNT2 = '2',
-    //     COUNT3 = '3',
-    //     COUNT4 = '4',
-    //     COUNT5 = '5',
-    //     COUNT6 = '6',
-    //     COUNT7 = '7',
-    //     COUNT8 = '8',
-    // };
 
     // Use 'clicklistener' that TouchGFX provides
     // REF: https://support.touchgfx.com/docs/development/ui-development/touchgfx-engine-features/mixins#clicklistener
@@ -52,11 +41,20 @@ protected:
     int timer_minutes;
     int timer_seconds;
 
-    void grid_clicked(Button &btn, ClickEvent &event);
-    // Get button widget by parsing button table
-    touchgfx::ClickListener<touchgfx::Button> &btn_table(int row, int col);
+    // Handling clicks
+    void button_clicked(Button &btn, ClickEvent &event);
+    
     // Declaring callback type of button and clickEvent
     Callback<Screen_gameplayView, const Button&, const ClickEvent&> Button_Callback;
+    
+    // Get button widget by parsing button table
+    touchgfx::ClickListener<touchgfx::Button> &btn_table(int row, int col);
+
+    // 
+    void matrix_content(int row, int col);
+    
+    // Looking for blank
+    void blank_recursing(int row, int col); 
 };
 
 #endif // SCREEN_GAMEPLAYVIEW_HPP
