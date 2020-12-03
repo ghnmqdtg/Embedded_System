@@ -1,10 +1,16 @@
 #include <gui/screen_gameplay_screen/Screen_gameplayView.hpp>
 // To get BITMAP__ID
 #include "BitmapDatabase.hpp"
+// To use rand()
 #include <stdlib.h>
 // Handling random value
-// #include <time.h>
-#include <stm32f7xx_hal.h>
+#ifdef SIMULATOR
+    // to use time() on TouchGFX simulator
+    #include <time.h>
+#else
+    // to use HAL_GetTick() on stm32
+    #include <stm32f7xx_hal.h>
+#endif
 
 #define MATRIX_ROW 8
 #define MATRIX_COL 15
@@ -14,14 +20,15 @@ int timer_running = 1;
 int winning_condition = 0;
 int bomb_num_buffer;
 int displayed_count;
-// Set extra head and tail to empty for handling edge cases
+
+// Set extra head and tail to empty for handling edge problem
 static enum Screen_gameplayView::gird_properties matrix[1 + MATRIX_ROW + 1][1 + MATRIX_COL + 1] = {
     Screen_gameplayView::gird_properties::EMPTY
 };
 
-// Set extra head and tail to empty for handling edge cases
-// 2D array has been displayed
-static int matrix_displayed[1 + MATRIX_ROW + 1][1 + MATRIX_COL + 1] = {0};
+// 2D array store which button has been displayed
+// Default undisplayed: 0, displayed: 1
+static int matrix_displayed[1 + MATRIX_ROW + 1][1 + MATRIX_COL + 1] = { 0 };
 
 void Screen_gameplayView::setupScreen()
 {
@@ -31,9 +38,11 @@ void Screen_gameplayView::setupScreen()
     bomb_num_buffer = bomb_num;
     Unicode::snprintf(text_mime_numBuffer, TEXT_MIME_NUM_SIZE, "%d", bomb_num);
     text_mime_num.invalidate();
-    
-    // Tell the widget which callback to use when it is touched,
+
+    // Tell the widget which callback to use when it is touched
+    // The callback function is defined in: TouchGFX\gui\include\gui\screen_gameplay_screen\Screen_gameplayView.hpp
     // This is done in setupScreen() to ensure that the callback is set every time the screen is entered.
+    // REF: https://support.touchgfx.com/docs/development/ui-development/touchgfx-engine-features/mixins#clicklistener
     for (int row = 1; row <= MATRIX_ROW; row++) {
         for (int col = 1; col <= MATRIX_COL; col++) {
             btn_table(row, col).setClickAction(Button_Callback);
@@ -43,15 +52,23 @@ void Screen_gameplayView::setupScreen()
     // Initail setting for matrix and matrix_displayed
     for (int row = 1; row <= MATRIX_ROW; row++) {
         for (int col = 1; col <= MATRIX_COL; col++) {
+            // Clear the matrix with EMPTY
             matrix[row][col] = gird_properties::EMPTY;
-            // matrix_displayed[row][col] = 0;
+            // Clear the matrix with 0
+            matrix_displayed[row][col] = 0;
+            // Let timer runs
             timer_running = 1;
         }
     }
 
     // Set bombs in matrix
     // Random seed
-    srand(HAL_GetTick());
+    #ifdef SIMULATOR
+        // time.h is included in the head of this file
+        srand(time(NULL));
+    #else
+        srand(HAL_GetTick());
+    #endif
     // Buffer for bombs
     int bomb_to_be_set = bomb_num;
     
@@ -74,10 +91,15 @@ void Screen_gameplayView::setupScreen()
         for (int col = 1; col <= MATRIX_COL; col++) {
             if (matrix[row][col] != gird_properties::BOMB) {
                 // Count surrounded grid
-                int count = (matrix[row - 1][col - 1] == gird_properties::BOMB) + (matrix[row - 1][col] == gird_properties::BOMB) + (matrix[row - 1][col + 1] == gird_properties::BOMB) + \
-                            (matrix[row    ][col - 1] == gird_properties::BOMB) +                                                   (matrix[row    ][col + 1] == gird_properties::BOMB) + \
-                            (matrix[row + 1][col - 1] == gird_properties::BOMB) + (matrix[row + 1][col] == gird_properties::BOMB) + (matrix[row + 1][col + 1] == gird_properties::BOMB);
-                
+                int count = 0;
+                for (int i = -1; i < 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (matrix[row + j][col + i] == gird_properties::BOMB) {
+                            count = count + 1;
+                        }
+                    }
+                }
+
                 switch (count) {
                     case 0: matrix[row][col] = gird_properties::EMPTY; break;
                     case 1: matrix[row][col] = gird_properties::COUNT1; break;
@@ -101,22 +123,22 @@ void Screen_gameplayView::setupScreen()
     #ifdef SIMULATOR
         for (int row = 1; row <= MATRIX_ROW; row++) {
             for (int col = 1; col <= MATRIX_COL; col++) {
-                char test_buffer = '\0';
+                char testing_buffer = '\0';
                 switch (matrix[row][col]) {
-                    case gird_properties::EMPTY:  test_buffer = '0'; break;
-                    case gird_properties::COUNT1: test_buffer = '1'; break;
-                    case gird_properties::COUNT2: test_buffer = '2'; break;
-                    case gird_properties::COUNT3: test_buffer = '3'; break;
-                    case gird_properties::COUNT4: test_buffer = '4'; break;
-                    case gird_properties::COUNT5: test_buffer = '5'; break;
-                    case gird_properties::COUNT6: test_buffer = '6'; break;
-                    case gird_properties::COUNT7: test_buffer = '7'; break;
-                    case gird_properties::COUNT8: test_buffer = '8'; break;
-                    case gird_properties::BOMB:   test_buffer = '*'; break;
+                    case gird_properties::EMPTY : testing_buffer = '0'; break;
+                    case gird_properties::COUNT1: testing_buffer = '1'; break;
+                    case gird_properties::COUNT2: testing_buffer = '2'; break;
+                    case gird_properties::COUNT3: testing_buffer = '3'; break;
+                    case gird_properties::COUNT4: testing_buffer = '4'; break;
+                    case gird_properties::COUNT5: testing_buffer = '5'; break;
+                    case gird_properties::COUNT6: testing_buffer = '6'; break;
+                    case gird_properties::COUNT7: testing_buffer = '7'; break;
+                    case gird_properties::COUNT8: testing_buffer = '8'; break;
+                    case gird_properties::BOMB  : testing_buffer = '*'; break;
                     default:
                         touchgfx_printf("ERROR content in the matrix\n");
                 }
-                touchgfx_printf("%c ", test_buffer);
+                touchgfx_printf("%c ", testing_buffer);
             }
             touchgfx_printf("\n");
         }
@@ -144,7 +166,8 @@ void Screen_gameplayView::Button_Click_Handler(const Button& btn, const ClickEve
 }
 
 void Screen_gameplayView::button_clicked(Button &btn, ClickEvent &event) {
-    // Get button coordinates
+    // Get button coordinates, every button is 25 by 25 pixels
+    // x for colume, y for row
     int x = btn.getX() / 25 + 1;
     int y = btn.getY() / 25 + 1;
     
@@ -165,9 +188,8 @@ void Screen_gameplayView::button_clicked(Button &btn, ClickEvent &event) {
         // Show all BOMBS 
         for (int row = 1; row <= MATRIX_ROW; row++) {
             for (int col = 1; col <= MATRIX_COL; col++) {
-                // if (matrix[row][col] == gird_properties::BOMB) {
-                    matrix_content(row, col);
-                // }
+                // // Show the contents under the button
+                matrix_content(row, col);
             }
         }
     }
@@ -177,6 +199,7 @@ void Screen_gameplayView::button_clicked(Button &btn, ClickEvent &event) {
     }
     matrix_content(y, x);
 
+    // Scan the matrix_displayed[][] to count the number of displayed button
     displayed_count = 0;
     for (int row = 1; row <= MATRIX_ROW; row++) {
             for (int col = 1; col <= MATRIX_COL; col++) {
@@ -245,10 +268,11 @@ touchgfx::ClickListener<touchgfx::Button>& Screen_gameplayView::btn_table(int ro
         }
     }
 
-
+// Show the contents under the button
 void Screen_gameplayView::matrix_content(int row, int col) {
     // Datatype decalred in 'touchgfx/Bitmap.hpp'
     uint16_t BITMAP__ID = 0;
+
     switch(matrix[row][col]) {
         case gird_properties::COUNT1: BITMAP__ID = BITMAP_BTN_01_ID;    break;
         case gird_properties::COUNT2: BITMAP__ID = BITMAP_BTN_02_ID;    break;
@@ -258,31 +282,42 @@ void Screen_gameplayView::matrix_content(int row, int col) {
         case gird_properties::COUNT6: BITMAP__ID = BITMAP_BTN_06_ID;    break;
         case gird_properties::COUNT7: BITMAP__ID = BITMAP_BTN_07_ID;    break;
         case gird_properties::COUNT8: BITMAP__ID = BITMAP_BTN_08_ID;    break;
-        case gird_properties::EMPTY:  BITMAP__ID = BITMAP_BTN_BLANK_ID; break;
-        case gird_properties::BOMB:   BITMAP__ID = BITMAP_BTN_BOMB_ID;  break;
+        case gird_properties::EMPTY : BITMAP__ID = BITMAP_BTN_BLANK_ID; break;
+        case gird_properties::BOMB  : BITMAP__ID = BITMAP_BTN_BOMB_ID;  break;
     }
 
+    // Replace the displayed picture
     btn_table(row, col).setBitmaps(Bitmap(BITMAP__ID), Bitmap(BITMAP__ID));
     btn_table(row, col).invalidate();
 }
 
 void Screen_gameplayView::blank_recursing(int row, int col) {
-    if (row > MATRIX_ROW || row < 1 || col > MATRIX_COL || col < 1 || matrix_displayed[row][col]) {
-        return;
+    // Check if it's out of range or has been clicked
+    if (row < 1 || row > MATRIX_ROW) {
+        if (col < 1 || col > MATRIX_COL) {
+            if (matrix_displayed[row][col]) {
+                return;
+            }
+        }
     }
+    // 
     else if (matrix_displayed[row][col] == 0) {
-
         switch (matrix[row][col]) {
+            // Ha! You loser!
             case gird_properties::BOMB:
                 break;
-            
+            // Okay, you are alive.
             case gird_properties::EMPTY:
                 matrix_displayed[row][col] = 1;
                 matrix_content(row, col);
-                blank_recursing(row - 1, col - 1);  blank_recursing(row - 1, col);  blank_recursing(row - 1, col + 1);
-                blank_recursing(row    , col - 1);                                  blank_recursing(row    , col + 1);
-                blank_recursing(row + 1, col - 1);  blank_recursing(row + 1, col);  blank_recursing(row + 1, col + 1);
+                // Recurse to check surrounded buttons
+                for (int i = -1; i < 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        blank_recursing(row + j, col + i);
+                    }
+                }
                 break;
+            // For numbers surrounded by bombs
             default:
                 matrix_content(row, col);
                 matrix_displayed[row][col] = 1;
@@ -292,26 +327,27 @@ void Screen_gameplayView::blank_recursing(int row, int col) {
 }
 
 // Setup the timer by using 'DigitalClock' document provided by TouchGFX
-void Screen_gameplayView::handleTickEvent()
-{
+void Screen_gameplayView::handleTickEvent() {
     // Return(stop counting) if it's set to be stopped
     if(!timer_running) {
         return;
     }
-    // Update the clock
-    tick_counter++;
-    if (tick_counter % 60 == 0) {
-        if (++timer_seconds >= 60) {
-            timer_seconds = 0;
-            if (++timer_minutes >= 60) {
-                timer_minutes = 0;
-                if (++timer_hours >= 24) {
-                    timer_hours = 0;
+    else {
+        // Update the clock
+        tick_counter++;
+        if (tick_counter % 60 == 0) {
+            if (++timer_seconds >= 60) {
+                timer_seconds = 0;
+                if (++timer_minutes >= 60) {
+                    timer_minutes = 0;
+                    if (++timer_hours >= 24) {
+                        timer_hours = 0;
+                    }
                 }
             }
+            // The default setting of DigitalClock is to display (hour, min, sec), and sec can be set to invisible
+            // So I replace hour and min with min and sec, it becomes (min, sec, 0)
+            digitalClock.setTime24Hour(timer_minutes, timer_seconds, 0);
         }
-        // The default setting of DigitalClock is to display (hour, min, sec), and sec can be set to invisible
-        // So I replace hour and min with min and sec, it becomes (min, sec, 0)
-        digitalClock.setTime24Hour(timer_minutes, timer_seconds, 0);
     }
 }
