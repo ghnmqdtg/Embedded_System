@@ -3,4 +3,9 @@
 03_BASIC_printf-over-UART/
 lab01_uart/
 RemoteSystemsTempFiles/
+<<<<<<< HEAD
 HW1_backup.c
+=======
+lab03_minesweeper/STM32CubeIDE/Debug/
+lab03_minesweeper/TouchGFX/build/
+>>>>>>> 7fbf72e... Misc: Update .gitignore
