@@ -1,7 +1,8 @@
 .gitignore
 .metadata/
-03_BASIC_printf-over-UART/
-lab01_uart/
 RemoteSystemsTempFiles/
+lab01_UART_LCD/Debug
+lab02_ping_pong/Debug
 lab03_minesweeper/STM32CubeIDE/Debug/
 lab03_minesweeper/TouchGFX/build/
+lab04_handwriting_recognition/Debug
