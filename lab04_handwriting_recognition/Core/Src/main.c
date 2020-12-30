@@ -231,14 +231,12 @@ int main(void)
             // Every square is 8 * 8
             // The number of square is counted by x * 28 + y
             // REF: https://reurl.cc/Q3863o
-            int position = ((TS_State.touchX[0] - 24) / 8) + ((TS_State.touchY[0] - 8) / 8 * 28);
-
-            in_data[position] = 1.0f;
-
+            in_data[((TS_State.touchX[0] - 24) / 8) + ((TS_State.touchY[0] - 8) / 8 * 28)] = 1.0f;
             in_data[((TS_State.touchX[0] - 24) / 8) + (((TS_State.touchY[0] - 8) / 8 + 1) * 28)] = 1.0f;
             in_data[((TS_State.touchX[0] - 24) / 8) + (((TS_State.touchY[0] - 8) / 8 - 1) * 28)] = 1.0f;
             in_data[((TS_State.touchX[0] - 24) / 8 + 1) + (((TS_State.touchY[0] - 8) / 8) * 28)] = 1.0f;
             in_data[((TS_State.touchX[0] - 24) / 8 - 1) + (((TS_State.touchY[0] - 8) / 8) * 28)] = 1.0f;
+
             // draw the circle at the position of the touch
             BSP_LCD_FillCircle(TS_State.touchX[0], TS_State.touchY[0], 5);
 
@@ -286,6 +284,7 @@ int main(void)
                   checked = 0;
                 }
 
+                // Prevent from keeping changing mode
                 while (TS_State.touchDetected) {
                   BSP_TS_GetState(&TS_State);
                 }
@@ -312,6 +311,7 @@ int main(void)
                 
                 output = -1;
 
+                // Prevent from keeping changing mode
                 while (TS_State.touchDetected) {
                   BSP_TS_GetState(&TS_State);
                 }
